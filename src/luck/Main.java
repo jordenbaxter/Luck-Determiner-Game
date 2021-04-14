@@ -179,6 +179,7 @@ public class Main {
         File loginUsernameCheck;
         boolean isDirectory;
         boolean realIsDirectory = false;
+        String password;
 
         if (createOrLogin.equalsIgnoreCase("B")) {
             System.out.print("Username: ");
@@ -186,20 +187,22 @@ public class Main {
             loginUsernameCheck = new File(dir + "\\" + loginUsername);
             if (loginUsernameCheck.exists()) {
                 System.out.println("Password: ");
+                password = sc.nextLine();
             }
             File isDirectoryCheck = new File(dir + "\\" + loginUsername);
             isDirectory = isDirectoryCheck.isDirectory();
-            System.out.println(isDirectory);
-            while (isDirectory = false) {
-                System.out.println("kjahsd");
-            }
+            if (!isDirectory) {
+                System.out.print("");
                 realIsDirectory = true;
+            }
             while (realIsDirectory) {
                 System.out.print("The username specified is invalid. Try \"Creating an account\" or try again: ");
                 loginUsername = sc.nextLine();
                 loginUsernameCheck = new File(dir + "\\" + loginUsername);
                 if (loginUsernameCheck.exists()) {
                     System.out.println("Password: ");
+                    password = sc.nextLine();
+                    break;
                 }
             }
         }
