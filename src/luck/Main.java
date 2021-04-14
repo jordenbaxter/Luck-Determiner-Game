@@ -188,6 +188,7 @@ public class Main {
             if (loginUsernameCheck.exists()) {
                 System.out.println("Password: ");
                 password = sc.nextLine();
+                //open file and check if password matches password in file and if it does set loggedin = true
             }
             File isDirectoryCheck = new File(dir + "\\" + loginUsername);
             isDirectory = isDirectoryCheck.isDirectory();
