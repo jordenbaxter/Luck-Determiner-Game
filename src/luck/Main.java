@@ -1,5 +1,6 @@
 package luck;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -36,6 +37,13 @@ public class Main {
     private static boolean realIsDirectory = false;
     private static String password;
     private static boolean loggedIn = false;
+
+    private static File pointsTxt;
+    private static File moneyTxt;
+    private static Scanner scPointsTxt;
+    private static Scanner scMoneyTxt;
+    private static FileWriter pointsTxtWrite;
+    private static FileWriter moneyTxtWrite;
 
     private static double i = 0;
     private static double guessedZero = 0;
@@ -188,6 +196,21 @@ public class Main {
                 FileWriter passwordStorage = new FileWriter(dir + "\\" + newUsername + "\\" + "password.txt");
                 passwordStorage.write(newPassword);
                 passwordStorage.close();
+                File gameDataFolder = new File(dir + "\\" + newUsername + "\\" + "gamedata");
+                gameDataFolder.mkdir();
+//Stuck - have to write down this info to text file but not working
+                pointsTxt = new File(dir + "\\" + newUsername + "\\" + "gamedata\\points.txt");
+                pointsTxt.createNewFile();
+                pointsTxtWrite = new FileWriter(dir + "\\" + newUsername + "\\" + "gamedata\\points.txt", true);
+                BufferedWriter pointsTxtBw = new BufferedWriter(pointsTxtWrite);
+                pointsTxtBw.write("{Points: 0}");
+
+                moneyTxt = new File(dir + "\\" + newUsername + "\\" + "gamedata\\money.txt");
+                moneyTxt.createNewFile();
+                moneyTxtWrite = new FileWriter(dir + "\\" + newUsername + "\\" + "gamedata\\money.txt", true);
+                BufferedWriter moneyTxtBw = new BufferedWriter(moneyTxtWrite);
+                moneyTxtBw.write("{Money: 0}");
+//Stuck text file coming out as 0kb
                 System.out.println("Your account has been successfully created.");
             }
             else
@@ -306,7 +329,11 @@ public class Main {
                     toFormat = (guessedOne+guessedZero)/i;
                     luck = format.format(toFormat);
                     System.out.println("Your luck percentage is: " + luck);
-
+                    System.out.println("Points: " + (Math.round(toFormat)/2));
+                    scPointsTxt = new Scanner(pointsTxt);
+                    String prevTotalPoints = scPointsTxt.nextLine();
+                    prevTotalPoints = prevTotalPoints.substring(prevTotalPoints.indexOf(":"), prevTotalPoints.indexOf("}"));
+                    System.out.println(prevTotalPoints);
                     break;
                 }
             }
