@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.NumberFormat;
 import java.util.Scanner;
 
 public class Main {
@@ -25,6 +26,23 @@ public class Main {
 
     private static int zeroCount;
     private static int oneCount;
+
+    private static int checkZeroCount;
+    private static int checkOneCount;
+
+    private static String loginUsername = "";
+    private static File loginUsernameCheck;
+    private static boolean isDirectory;
+    private static boolean realIsDirectory = false;
+    private static String password;
+    private static boolean loggedIn = false;
+
+    private static double i = 0;
+    private static double guessedZero = 0;
+    private static double guessedOne = 0;
+
+    private static String luck;
+    private static double toFormat;
 
     static void fiftyPercentChanceMethod() {
         int random = (int) Math.round(Math.random() * 10);
@@ -88,55 +106,56 @@ public class Main {
         }
     }
 
+    static void checkAmountOfZeroesAndOnes() {
+        if (zeroOrOneCheck1 == 0) {
+            zeroCount++;  checkZeroCount++;}
+        else {
+            oneCount++; checkOneCount++;}
+        if (zeroOrOneCheck2 == 0) {
+            zeroCount++; checkZeroCount++;}
+        else {
+            oneCount++; checkOneCount++;}
+        if (zeroOrOneCheck3 == 0) {
+            zeroCount++; checkZeroCount++;}
+        else {
+            oneCount++; checkOneCount++;}
+        if (zeroOrOneCheck4 == 0) {
+            zeroCount++; checkZeroCount++;}
+        else {
+            oneCount++; checkOneCount++;}
+        if (zeroOrOneCheck5 == 0) {
+            zeroCount++; checkZeroCount++;}
+        else {
+            oneCount++; checkOneCount++;}
+        if (zeroOrOneCheck6 == 0) {
+            zeroCount++; checkZeroCount++;}
+        else {
+            oneCount++; checkOneCount++;}
+        if (zeroOrOneCheck7 == 0) {
+            zeroCount++; checkZeroCount++;}
+        else {
+            oneCount++; checkOneCount++;}
+        if (zeroOrOneCheck8 == 0) {
+            zeroCount++; checkZeroCount++;}
+        else {
+            oneCount++; checkOneCount++;}
+        if (zeroOrOneCheck9 == 0) {
+            zeroCount++; checkZeroCount++;}
+        else {
+            oneCount++; checkOneCount++;}
+        if (zeroOrOneCheck10 == 0) {
+            zeroCount++; checkZeroCount++;}
+        else {
+            oneCount++; checkOneCount++;}
+    }
+
     static void soutzeroOrOneChecks() {
         System.out.println("Rolling...");
         System.out.println(zeroOrOneCheck1+", "+zeroOrOneCheck2+", "+zeroOrOneCheck3+", "+zeroOrOneCheck4+", "+zeroOrOneCheck5+", "+zeroOrOneCheck6+", "+zeroOrOneCheck7+", "+zeroOrOneCheck8+", "+zeroOrOneCheck9+", "+zeroOrOneCheck10);
+        System.out.println("Zeroes: " + zeroCount + ", Ones: " + oneCount);
     }
 
-    static void checkAmountOfZeroesAndOnes() {
-        if (zeroOrOneCheck1 == 0)
-            zeroCount++;
-        else
-            oneCount++;
-        if (zeroOrOneCheck2 == 0)
-            zeroCount++;
-        else
-            oneCount++;
-        if (zeroOrOneCheck3 == 0)
-            zeroCount++;
-        else
-            oneCount++;
-        if (zeroOrOneCheck4 == 0)
-            zeroCount++;
-        else
-            oneCount++;
-        if (zeroOrOneCheck5 == 0)
-            zeroCount++;
-        else
-            oneCount++;
-        if (zeroOrOneCheck6 == 0)
-            zeroCount++;
-        else
-            oneCount++;
-        if (zeroOrOneCheck7 == 0)
-            zeroCount++;
-        else
-            oneCount++;
-        if (zeroOrOneCheck8 == 0)
-            zeroCount++;
-        else
-            oneCount++;
-        if (zeroOrOneCheck9 == 0)
-            zeroCount++;
-        else
-            oneCount++;
-        if (zeroOrOneCheck10 == 0)
-            zeroCount++;
-        else
-            oneCount++;
-    }
-
-    public static void main (String[] args) throws IOException {
+    static void logInSystem() throws IOException {
         Scanner sc = new Scanner(System.in);
         System.out.print("Create an account (A) || Log into an existing account (B) : ");
         String createOrLogin = sc.nextLine();
@@ -156,7 +175,7 @@ public class Main {
         if (createOrLogin.equalsIgnoreCase("A")) {
             System.out.print("What should we keep your username as: ");
             String newUsername = sc.nextLine();
-            File newUsernameFile = new File(dir + newUsername);
+            File newUsernameFile = new File(dir + "\\" + newUsername);
             while (newUsernameFile.exists()) {
                 System.out.print("This username is taken. Please choose another username: ");
                 newUsername = sc.nextLine();
@@ -175,20 +194,29 @@ public class Main {
                 System.out.println("The user could not be created.");
         }
 
-        String loginUsername = "";
-        File loginUsernameCheck;
-        boolean isDirectory;
-        boolean realIsDirectory = false;
-        String password;
-
         if (createOrLogin.equalsIgnoreCase("B")) {
             System.out.print("Username: ");
             loginUsername = sc.nextLine();
             loginUsernameCheck = new File(dir + "\\" + loginUsername);
             if (loginUsernameCheck.exists()) {
-                System.out.println("Password: ");
+                System.out.print("Password: ");
                 password = sc.nextLine();
-                //open file and check if password matches password in file and if it does set loggedin = true
+                File passwordTxt = new File(dir + "\\" + loginUsername + "\\password.txt");
+                Scanner fileSc = new Scanner(passwordTxt);
+                String shouldBePassword = fileSc.nextLine();
+                if (shouldBePassword.equals(password)) {
+                    loggedIn = true;
+                    System.out.println("You're logged in!");
+                }
+                while (!loggedIn) {
+                    System.out.print("The password you have entered is invalid. Please try again: ");
+                    password = sc.nextLine();
+                    if (shouldBePassword.equals(password)) {
+                        loggedIn = true;
+                        System.out.println("You're logged in!");
+                        break;
+                    }
+                }
             }
             File isDirectoryCheck = new File(dir + "\\" + loginUsername);
             isDirectory = isDirectoryCheck.isDirectory();
@@ -201,8 +229,84 @@ public class Main {
                 loginUsername = sc.nextLine();
                 loginUsernameCheck = new File(dir + "\\" + loginUsername);
                 if (loginUsernameCheck.exists()) {
-                    System.out.println("Password: ");
+                    System.out.print("Password: ");
                     password = sc.nextLine();
+                    File passwordTxt = new File(dir + "\\" + loginUsername + "\\password.txt");
+                    Scanner fileSc = new Scanner(passwordTxt);
+                    String shouldBePassword = fileSc.nextLine();
+                    if (shouldBePassword.equals(password)) {
+                        loggedIn = true;
+                        System.out.println("You're logged in!");
+                    }
+                    while (!loggedIn) {
+                        System.out.print("The password you have entered is invalid. Please try again: ");
+                        password = sc.nextLine();
+                        if (shouldBePassword.equals(password)) {
+                            loggedIn = true;
+                            System.out.println("You're logged in!");
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    public static void main (String[] args) throws IOException {
+
+        String bet = "69";
+
+        logInSystem();
+        Scanner sc = new Scanner(System.in);
+        if (loggedIn) {
+            System.out.print("What would you like to do: ");
+            String whatLikeToDo = sc.nextLine();
+            while (true) {
+                if (whatLikeToDo.equalsIgnoreCase("play")) {
+                    System.out.print("Which do you think you will get more of (0's or 1's): ");
+                    bet = sc.nextLine();
+                    while (!bet.equals("0") && !bet.equals("1") && !bet.equalsIgnoreCase("cashout")) {
+                        System.out.print("Type either 1 or 0: ");
+                        bet = sc.nextLine();
+                    }
+                    if (!bet.equalsIgnoreCase("cashout")) {
+                        callingTheFiftyPercentChanceMethodMethod();
+                        checkAmountOfZeroesAndOnes();
+                        soutzeroOrOneChecks();
+                    }
+                    if (zeroCount > oneCount && !bet.equalsIgnoreCase("cashout")) {
+                        System.out.println("You rolled more zeroes than ones.");
+                        if (bet.equals("0")) {
+                            System.out.println("Congratulations! You win!"); guessedZero++; }
+                        else {
+                            System.out.println("Oopsie! You guessed it wrong.");}
+                    }
+                    if (zeroCount < oneCount && !bet.equalsIgnoreCase("cashout")) {
+                        System.out.println("You rolled more ones than zeroes.");
+                        if (bet.equals("1")) {
+                            System.out.println("Congratulations! You win!"); guessedOne++; }
+                        else {
+                            System.out.println("Oopsie! You guessed it wrong.");}
+                    }
+                    if (zeroCount == oneCount && !bet.equalsIgnoreCase("cashout")) {
+                        System.out.println("Draw! Please try again.");
+                    }
+                    i++;
+                }
+                zeroCount = 0;
+                oneCount = 0;
+
+                if (bet.equalsIgnoreCase("cashout")) {
+                    System.out.println("Cashing out..");
+                    System.out.println("You rolled " + checkZeroCount + " zeroes and " + checkOneCount + " ones in total.");
+                    System.out.println("You played the game " + i + " times, guessed zero correctly " + guessedZero + " time(s), and guessed one correctly " + guessedOne + " time(s).");
+                    NumberFormat format = NumberFormat.getPercentInstance();
+                    format.setMinimumFractionDigits(1);
+                    toFormat = (guessedOne+guessedZero)/i;
+                    luck = format.format(toFormat);
+                    System.out.println("Your luck percentage is: " + luck);
+
                     break;
                 }
             }
