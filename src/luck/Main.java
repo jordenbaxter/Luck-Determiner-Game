@@ -1,9 +1,6 @@
 package luck;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.text.NumberFormat;
 import java.util.Scanner;
@@ -32,6 +29,8 @@ public class Main {
     private static int checkOneCount;
 
     private static String loginUsername = "";
+    private static String whatLikeToDo = "";
+    private static File fileDir;
     private static File loginUsernameCheck;
     private static boolean isDirectory;
     private static boolean realIsDirectory = false;
@@ -40,10 +39,6 @@ public class Main {
 
     private static File pointsTxt;
     private static File moneyTxt;
-    private static Scanner scPointsTxt;
-    private static Scanner scMoneyTxt;
-    private static FileWriter pointsTxtWrite;
-    private static FileWriter moneyTxtWrite;
 
     private static double i = 0;
     private static double guessedZero = 0;
@@ -51,6 +46,11 @@ public class Main {
 
     private static String luck;
     private static double toFormat;
+
+    private static String dir = "";
+    private static String newUsername;
+
+    private static int totalPoints;
 
     static void fiftyPercentChanceMethod() {
         int random = (int) Math.round(Math.random() * 10);
@@ -177,12 +177,16 @@ public class Main {
             createOrLogin = sc.nextLine();
         }
 
-        String dir = System.getProperty("user.dir")+"\\src\\luck\\Users";
-        //String dir = System.getProperty("user.dir")+"\\Users";
+        dir = System.getProperty("user.dir")+"\\src\\luck\\Users";
+        //dir = System.getProperty("user.dir")+";
+        fileDir = new File(System.getProperty("user.dir")+"\\src\\luck"+"\\Users");
+
+        if (!fileDir.exists())
+            fileDir.mkdir();
 
         if (createOrLogin.equalsIgnoreCase("A")) {
             System.out.print("What should we keep your username as: ");
-            String newUsername = sc.nextLine();
+            newUsername = sc.nextLine();
             File newUsernameFile = new File(dir + "\\" + newUsername);
             while (newUsernameFile.exists()) {
                 System.out.print("This username is taken. Please choose another username: ");
@@ -198,23 +202,18 @@ public class Main {
                 passwordStorage.close();
                 File gameDataFolder = new File(dir + "\\" + newUsername + "\\" + "gamedata");
                 gameDataFolder.mkdir();
-//Stuck - have to write down this info to text file but not working
-                pointsTxt = new File(dir + "\\" + newUsername + "\\" + "gamedata\\points.txt");
-                pointsTxt.createNewFile();
-                pointsTxtWrite = new FileWriter(dir + "\\" + newUsername + "\\" + "gamedata\\points.txt", true);
-                BufferedWriter pointsTxtBw = new BufferedWriter(pointsTxtWrite);
-                pointsTxtBw.write("{Points: 0}");
 
-                moneyTxt = new File(dir + "\\" + newUsername + "\\" + "gamedata\\money.txt");
-                moneyTxt.createNewFile();
-                moneyTxtWrite = new FileWriter(dir + "\\" + newUsername + "\\" + "gamedata\\money.txt", true);
-                BufferedWriter moneyTxtBw = new BufferedWriter(moneyTxtWrite);
-                moneyTxtBw.write("{Money: 0}");
-//Stuck text file coming out as 0kb
+                FileWriter pointsTxtWrite = new FileWriter(dir + "\\" + newUsername + "\\" + "gamedata\\points.txt", true);
+                pointsTxtWrite.write("{Points: 0}");
+                pointsTxtWrite.close();
+
+                FileWriter moneyTxtWrite = new FileWriter(dir + "\\" + newUsername + "\\" + "gamedata\\money.txt", true);
+                moneyTxtWrite.write("{Money: 0}");
+                moneyTxtWrite.close();
+
                 System.out.println("Your account has been successfully created.");
-            }
-            else
-                System.out.println("The user could not be created.");
+            } else
+                System.out.println("Your account could not be created.");
         }
 
         if (createOrLogin.equalsIgnoreCase("B")) {
@@ -228,6 +227,8 @@ public class Main {
                 Scanner fileSc = new Scanner(passwordTxt);
                 String shouldBePassword = fileSc.nextLine();
                 if (shouldBePassword.equals(password)) {
+                    pointsTxt = new File(dir + "\\" + loginUsername + "\\" + "gamedata\\points.txt");
+                    moneyTxt = new File(dir + "\\" + loginUsername + "\\" + "gamedata\\money.txt");
                     loggedIn = true;
                     System.out.println("You're logged in!");
                 }
@@ -235,6 +236,8 @@ public class Main {
                     System.out.print("The password you have entered is invalid. Please try again: ");
                     password = sc.nextLine();
                     if (shouldBePassword.equals(password)) {
+                        pointsTxt = new File(dir + "\\" + loginUsername + "\\" + "gamedata\\points.txt");
+                        moneyTxt = new File(dir + "\\" + loginUsername + "\\" + "gamedata\\money.txt");
                         loggedIn = true;
                         System.out.println("You're logged in!");
                         break;
@@ -258,6 +261,8 @@ public class Main {
                     Scanner fileSc = new Scanner(passwordTxt);
                     String shouldBePassword = fileSc.nextLine();
                     if (shouldBePassword.equals(password)) {
+                        pointsTxt = new File(dir + "\\" + loginUsername + "\\" + "gamedata\\points.txt");
+                        moneyTxt = new File(dir + "\\" + loginUsername + "\\" + "gamedata\\money.txt");
                         loggedIn = true;
                         System.out.println("You're logged in!");
                     }
@@ -265,6 +270,8 @@ public class Main {
                         System.out.print("The password you have entered is invalid. Please try again: ");
                         password = sc.nextLine();
                         if (shouldBePassword.equals(password)) {
+                            pointsTxt = new File(dir + "\\" + loginUsername + "\\" + "gamedata\\points.txt");
+                            moneyTxt = new File(dir + "\\" + loginUsername + "\\" + "gamedata\\money.txt");
                             loggedIn = true;
                             System.out.println("You're logged in!");
                             break;
@@ -284,7 +291,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         if (loggedIn) {
             System.out.print("What would you like to do: ");
-            String whatLikeToDo = sc.nextLine();
+            whatLikeToDo = sc.nextLine();
             while (true) {
                 if (whatLikeToDo.equalsIgnoreCase("play")) {
                     System.out.print("Which do you think you will get more of (0's or 1's): ");
@@ -320,20 +327,55 @@ public class Main {
                 zeroCount = 0;
                 oneCount = 0;
 
+                if (whatLikeToDo.equalsIgnoreCase("points to cash")) {
+                    Scanner scPointsTxt = new Scanner(pointsTxt);
+                    String strPoints = scPointsTxt.nextLine();
+                    int points = Integer.parseInt(strPoints.substring(strPoints.indexOf(":")+2, strPoints.indexOf("}")));
+
+                    System.out.println("Converting " + points + " points to cash...");
+
+                    Scanner scMoneyTxt = new Scanner(moneyTxt);
+                    String strMoney = scMoneyTxt.nextLine();
+                    int money = Integer.parseInt(strMoney.substring(strMoney.indexOf(":")+2, strMoney.indexOf("}")));
+
+                    System.out.println("Congratulations! You gained $" + points/10 +  ". Your new total balance is $" + ((points/10)+money) + ".");
+
+                    pointsTxt.delete();
+                    pointsTxt.createNewFile();
+                    FileWriter pointsTxtWrite = new FileWriter(pointsTxt);
+                    pointsTxtWrite.write("{Points: 0}");
+                    pointsTxtWrite.close();
+
+                    moneyTxt.delete();
+                    moneyTxt.createNewFile();
+                    FileWriter moneyTxtWrite = new FileWriter(moneyTxt);
+                    moneyTxtWrite.write("{Money: " + ((points/10)+money) + "}");
+                    moneyTxtWrite.close();
+
+                    whatLikeToDo = "";
+                    break;
+                }
+
                 if (bet.equalsIgnoreCase("cashout")) {
                     System.out.println("Cashing out..");
                     System.out.println("You rolled " + checkZeroCount + " zeroes and " + checkOneCount + " ones in total.");
-                    System.out.println("You played the game " + i + " times, guessed zero correctly " + guessedZero + " time(s), and guessed one correctly " + guessedOne + " time(s).");
+                    System.out.println("You played the game " + (i-1) + " times, guessed zero correctly " + guessedZero + " time(s), and guessed one correctly " + guessedOne + " time(s).");
                     NumberFormat format = NumberFormat.getPercentInstance();
                     format.setMinimumFractionDigits(1);
-                    toFormat = (guessedOne+guessedZero)/i;
+                    toFormat = (guessedOne+guessedZero)/(i-1);
                     luck = format.format(toFormat);
                     System.out.println("Your luck percentage is: " + luck);
-                    System.out.println("Points: " + (Math.round(toFormat)/2));
-                    scPointsTxt = new Scanner(pointsTxt);
-                    String prevTotalPoints = scPointsTxt.nextLine();
-                    prevTotalPoints = prevTotalPoints.substring(prevTotalPoints.indexOf(":"), prevTotalPoints.indexOf("}"));
-                    System.out.println(prevTotalPoints);
+                    System.out.println("Points: " + (Math.round((toFormat*100))/2));
+                    Scanner scPointsTxt = new Scanner(pointsTxt);
+                    String strOriginalPoints = scPointsTxt.nextLine();
+                    int originalPoints = Integer.parseInt(strOriginalPoints.substring(strOriginalPoints.indexOf(":")+2, strOriginalPoints.indexOf("}")));
+                    totalPoints = (int) (originalPoints + (Math.round((toFormat*100))/2));
+                    System.out.println("Total Points: " + totalPoints);
+                    pointsTxt.delete();
+                    pointsTxt.createNewFile();
+                    FileWriter pointsTxtWrite = new FileWriter(pointsTxt);
+                    pointsTxtWrite.write("{Points: " + totalPoints + "}");
+                    pointsTxtWrite.close();
                     break;
                 }
             }
