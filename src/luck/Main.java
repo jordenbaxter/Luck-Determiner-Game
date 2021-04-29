@@ -177,8 +177,8 @@ public class Main {
             createOrLogin = sc.nextLine();
         }
 
-        dir = System.getProperty("user.dir")+"\\src\\luck\\Users";
-        //dir = System.getProperty("user.dir")+";
+        //dir = System.getProperty("user.dir")+"\\src\\luck\\Users";
+        dir = System.getProperty("user.dir") + "\\Users";
         fileDir = new File(System.getProperty("user.dir")+"\\src\\luck"+"\\Users");
 
         if (!fileDir.exists())
@@ -353,6 +353,7 @@ public class Main {
                     moneyTxtWrite.close();
 
                     whatLikeToDo = "";
+                    sc.nextLine();
                     break;
                 }
 
@@ -376,6 +377,7 @@ public class Main {
                     FileWriter pointsTxtWrite = new FileWriter(pointsTxt);
                     pointsTxtWrite.write("{Points: " + totalPoints + "}");
                     pointsTxtWrite.close();
+                    sc.nextLine();
                     break;
                 }
             }
